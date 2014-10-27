@@ -374,6 +374,7 @@
     </div>
     <p>The ‘detail’ payload part of this event is an extra piece of information defining the event, if necessary, such as the value for a SetValue command.</p>
     <p>A User Intention event will fire whenever an AT invokes an action via the accessibility APIs:</p>
+    <img src="commandevent.gif" alt="Swimlane diagram of command events.  First the Accessibiltiy Tool sends a command to the browser to toggle the checkbox.  Next, the browser fires the onCommand event.  Next, javascript catches that event, runs application script, and returns to the browser. The browser then runs the default behavior if it has not been cancelled. Finally, the browser returns to the accessibility tool." />
     <h3>Relationship to ARIA</h3>
     <p>WAPA is intended to extend the functionality of ARIA to situations where it will be easier or more performant to manage accessibility in script rather than in markup.  It allows web authors to provide ARIA name-value pairs to the Accessibility API via javascript functions without the need for an element with those name-value pairs to be present in the document object.</p>
     <h3>Relationship to IndieUI</h3>
