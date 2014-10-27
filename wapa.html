@@ -32,7 +32,7 @@
     </style>
 </head>
 <body>
-    <h1>test Web Accessibility Properties and Actions (WAPA) Explainer</h1>
+    <h1>Web Accessibility Properties and Actions (WAPA) Explainer</h1>
     <div class="issue">Note:  The name of this functionality is still an open question</div>
     <h2>Unofficial Draft 24 October 2014</h2>
     <dl>
@@ -45,44 +45,66 @@
     <h2>Status of This Document</h2>
     <p>This document is a draft of a proposal to the w3c.  Our hope is that it would be incorporated into the PF ARIA taskforce, DOM or WebApps work.  It is an early draft and has no normative standing.</p>
 
-
-    <h2 id="h2-intro">Introduction</h2>
-    <p>Web Accessibility Properties and Actions (WAPA) allows more direct communication between web applications and platform accessibility APIs.  It includes three pieces</p>
-    <ol>
-        <li>A way for web authors to provide ARIA name-value pairs (properties) to accessibility APIs from script, without requiring an element with those aria properties in the Document object.</li>
-        <li>A way for web authors to react in script to method calls from accessibility APIs (actions)</li>
-        <li>A mechanism for handling accessibility information for virtualized content, where the DOM is only a subset of the actual dataset or document.</li>
-    </ol>
-    <div class="issue">Question: Should virtualization be a separate spec?</div>
-
-    <h2 id="h2-props">Web Accessibility Properties</h2>
-    <p>AT Request for Accessible node property via accessibility API</p>
-    <div class="issue">todo: make graphical flowchart</div>
-    <ol>
-        <li>AT calls Accessibility API via OS requesting the value of a property on the Accessible node</li>
-        <li>Accessibility API queries browser</li>
-        <li>Browser gets the DOM element assosicated with the Accessible node</li>
-        <li>Browser checks whether the attribute exists on the element</li>
-        <li>If no
-            <ol>
-                <li>Browser sends DOM event ariarequest</li>
-                <li>Javascript catches ariarequest event</li>
-                <li>Javascript sets attributeValue for the attributeName</li>
-                <li>If cancel default, end</li>
-            </ol>
+    <h2 id="toc">Table of Conents</h2>
+    <ul>
+        <li><a href="#a-intro">Introduction</a></li>
+        <li><a href="#a-props">Web Accessibility Properties</a></li>
+        <li><a href="#a-actions">Web Accessibility Actions</a></li>
+        <li><a href="#a-mapping">Mapping to Accessibility APIS</a></li>
+        <li><a href="#a-usecases">Use Cases</a>
+            <ul>
+                <li><a href="#a-usecase1">Use Case 1: Performance improvement with Just-in-Time loading of accessibility information</a></li>
+                <li><a href="#a-usecase2">Use Case 2: Accessibility information Stored outside DOM</a></li>
+                <li><a href="#a-usecase3">Use Case 3: Virtualized Content</a></li>
+                <li><a href="#a-usecase4">Use Case 4: Custom Elements	 (Future)</a></li>
+                <li><a href="#a-usecase5">Case 5: WebDriver testing of accessibility (Future)</a></li>
+            </ul>
         </li>
-        <li>
-            If yes (or fall through)
-            <ol>
-                <li>Browser gets aria name-value pair from dom</li>
-            </ol>
-        </li>
-        <li>Browser updates accessibility API with name-value pair</li>
-        <li>Accessibility API returns name-value pair to calling AT</li>
-    </ol>
-    <h3 id="h3-props-idl">IDL</h3>
-    <div class="idl">
-        <pre><code class="highlight prettyprint pretttyprinted">
+        <li><a href="#a-rel">Relationship to Other work</a></li>
+    </ul>
+
+    <section id="intro">
+        <a name="a-intro"></a>
+        <h2 id="h2-intro">Introduction</h2>
+        <p>Web Accessibility Properties and Actions (WAPA) allows more direct communication between web applications and platform accessibility APIs.  It includes three pieces</p>
+        <ol>
+            <li>A way for web authors to provide ARIA name-value pairs (properties) to accessibility APIs from script, without requiring an element with those aria properties in the Document object.</li>
+            <li>A way for web authors to react in script to method calls from accessibility APIs (actions)</li>
+            <li>A mechanism for handling accessibility information for virtualized content, where the DOM is only a subset of the actual dataset or document.</li>
+        </ol>
+        <div class="issue">Question: Should virtualization be a separate spec?</div>
+    </section>
+    <section id="props">
+        <a name="a-props"></a>
+        <h2 id="h2-props">Web Accessibility Properties</h2>
+        <p>AT Request for Accessible node property via accessibility API</p>
+        <div class="issue">todo: make graphical flowchart</div>
+        <ol>
+            <li>AT calls Accessibility API via OS requesting the value of a property on the Accessible node</li>
+            <li>Accessibility API queries browser</li>
+            <li>Browser gets the DOM element assosicated with the Accessible node</li>
+            <li>Browser checks whether the attribute exists on the element</li>
+            <li>
+                If no
+                <ol>
+                    <li>Browser sends DOM event ariarequest</li>
+                    <li>Javascript catches ariarequest event</li>
+                    <li>Javascript sets attributeValue for the attributeName</li>
+                    <li>If cancel default, end</li>
+                </ol>
+            </li>
+            <li>
+                If yes (or fall through)
+                <ol>
+                    <li>Browser gets aria name-value pair from dom</li>
+                </ol>
+            </li>
+            <li>Browser updates accessibility API with name-value pair</li>
+            <li>Accessibility API returns name-value pair to calling AT</li>
+        </ol>
+        <h3 id="h3-props-idl">IDL</h3>
+        <div class="idl">
+            <pre><code class="highlight prettyprint pretttyprinted">
             [Constructor(DOMString type, optional AriaRequestEventInit eventInitDict)]
             interface AriaRequestEvent : Event {
                 readonly attribute DOMString attributeName;
@@ -93,23 +115,26 @@
                 DOMString attributeValue = null;
             };
         </code></pre>
-    </div>
-    <h2 id="h2-actions">Web Accessibility Actions</h2>
-    <p>AT Action taken by user</p>
-    <ol>
-        <li>User takes action on an element using an AT</li>
-        <li>AT calls accessibility API method on that element</li>
-        <li>Accessibility API runs that method against browser</li>
-        <li>Browser sends User Intention Event on that element with the commandType for the action from the accessibility API (See Mapping Table below for example of UIA to CommandType mappings)</li>
-        <li>Javascript catches User Intention Event</li>
-        <li>Javascript modifies DOM attributes and/or script representation of object</li>
-        <li>If canceldefault, end</li>
-        <li>browser does action on element using default mechanisms</li>
-    </ol>
-    <div class="issue">How do you know if you were successful?  UIA methods have return values.  Do the other AAPIs?</div>
-    <h3 id="h2-actions-idl">IDL</h3>
-    <div class="idl">
-        <pre><code class="highlight prettyprint pretttyprinted">
+        </div>
+    </section>
+    <section id="actions">
+        <a name="a-actions"></a>
+        <h2 id="h2-actions">Web Accessibility Actions</h2>
+        <p>AT Action taken by user</p>
+        <ol>
+            <li>User takes action on an element using an AT</li>
+            <li>AT calls accessibility API method on that element</li>
+            <li>Accessibility API runs that method against browser</li>
+            <li>Browser sends User Intention Event on that element with the commandType for the action from the accessibility API (See Mapping Table below for example of UIA to CommandType mappings)</li>
+            <li>Javascript catches User Intention Event</li>
+            <li>Javascript modifies DOM attributes and/or script representation of object</li>
+            <li>If canceldefault, end</li>
+            <li>browser does action on element using default mechanisms</li>
+        </ol>
+        <div class="issue">How do you know if you were successful?  UIA methods have return values.  Do the other AAPIs?</div>
+        <h3 id="h2-actions-idl">IDL</h3>
+        <div class="idl">
+            <pre><code class="highlight prettyprint pretttyprinted">
             [Constructor(DOMString type, optional CommandEventInit eventInitDict)]
             interface CommandEvent : Event {
                 readonly attribute DOMString commandType;
@@ -120,89 +145,97 @@
                 DOMString detail = null;
             };
         </code></pre>
-    </div>
-    <h2 id="h2=mapping">Mapping to Accessibility APIS</h2>
-    <p>Example: CommandTypes to UIA methods</p>
-    <div class="issue">
-        NOTE:  Other APIs need to be fleshed out.  Most of these would be default action in MSAA.
-    </div>
-    <div class="issue">
-        NOTE: CommandType naming needs to be updated to sync better with User Intentions, ARIA and IndieUI.  It is currently based on the closely related UIA methods.
-    </div>
-    <p></p>
-    <table>
-        <tr>
-            <th>commandType</th>
-            <th>UIA method</th>
-        </tr>
-        <tr>
-            <td>Toggle</td>
-            <td>IToggleProvider::Toggle</td>
-        </tr>
-        <tr>
-            <td>Expand</td>
-            <td>IExpandCollapseProvider::Expand</td>
-        </tr>
-        <tr>
-            <td>collapse</td>
-            <td>IExpandCollapseProvider::Collapse</td>
-        </tr>
-        <tr>
-            <td>scrollIntoView</td>
-            <td>IScrollItemProvider::ScrollIntoView</td>
-        </tr>
-        <tr>
-            <td>Select</td>
-            <td>ISelectionItemProvider::Select</td>
-        </tr>
-        <tr>
-            <td>addToSelection</td>
-            <td>ISelectionItemProvider::AddToSelection</td>
-        </tr>
-        <tr>
-            <td>removeFromSelection</td>
-            <td>ISelectionItemProvider::RemoveFromSelection</td>
-        </tr>
-        <tr>
-            <td>setValue</td>
-            <td>IValueProvider::SetValue</td>
-        </tr>
-        <tr>
-            <td>scrollHorizontal</td>
-            <td>IScrollProvider::Scroll</td>
-        </tr>
-        <tr>
-            <td>scrollVertical</td>
-            <td>IScrollProvider::Scroll</td>
-        </tr>
-        <tr>
-            <td>setHorizontalScrollPercent</td>
-            <td>IScrollProvider::SetScrollPercent</td>
-        </tr>
-        <tr>
-            <td>setVerticalScrollPercent</td>
-            <td>IScrollProvider::SetScrollPercent</td>
-        </tr>
-    </table>
-    <h2 id="h2-usecases">Use Cases</h2>
-    <h3 id="usecase1">Use Case 1: Performance improvement with Just-in-Time loading of accessibility information</h3>
-    <ul>
-        <li>
-            Pre-loading all information is costly
-            <p>It can be very costly to pre-load all the accessibility information and get it added to all the relevant elements, especially if no one will ever ask for it. For example, populating all the names with aria-label takes time to load all the strings and add them to the markup, or to download them as part of a static markup.</p>
-        </li>
-        <li>
-            Updating ARIA state is costly
-            <p>Imagine a list with 100 items. If an item is added or removed from the list, every other item must update their aria-setsize and (potentially) aria-posinset attributes.</p>
-        </li>
-    </ul>
-    <p>The developer wants to provide accessibility information only when it is requested by AT via the Accessibility API, and not at the time the DOM is filled in.</p>
-    <p>This mechanism works with the @role attribute and any @aria- attribute.</p>
+        </div>
+    </section>
+    <section id="mapping">
+        <a name="a-mapping"></a>
+        <h2 id="h2=mapping">Mapping to Accessibility APIS</h2>
+        <p>Example: CommandTypes to UIA methods</p>
+        <div class="issue">
+            NOTE:  Other APIs need to be fleshed out.  Most of these would be default action in MSAA.
+        </div>
+        <div class="issue">
+            NOTE: CommandType naming needs to be updated to sync better with User Intentions, ARIA and IndieUI.  It is currently based on the closely related UIA methods.
+        </div>
+        <p></p>
+        <table>
+            <tr>
+                <th>commandType</th>
+                <th>UIA method</th>
+            </tr>
+            <tr>
+                <td>Toggle</td>
+                <td>IToggleProvider::Toggle</td>
+            </tr>
+            <tr>
+                <td>Expand</td>
+                <td>IExpandCollapseProvider::Expand</td>
+            </tr>
+            <tr>
+                <td>collapse</td>
+                <td>IExpandCollapseProvider::Collapse</td>
+            </tr>
+            <tr>
+                <td>scrollIntoView</td>
+                <td>IScrollItemProvider::ScrollIntoView</td>
+            </tr>
+            <tr>
+                <td>Select</td>
+                <td>ISelectionItemProvider::Select</td>
+            </tr>
+            <tr>
+                <td>addToSelection</td>
+                <td>ISelectionItemProvider::AddToSelection</td>
+            </tr>
+            <tr>
+                <td>removeFromSelection</td>
+                <td>ISelectionItemProvider::RemoveFromSelection</td>
+            </tr>
+            <tr>
+                <td>setValue</td>
+                <td>IValueProvider::SetValue</td>
+            </tr>
+            <tr>
+                <td>scrollHorizontal</td>
+                <td>IScrollProvider::Scroll</td>
+            </tr>
+            <tr>
+                <td>scrollVertical</td>
+                <td>IScrollProvider::Scroll</td>
+            </tr>
+            <tr>
+                <td>setHorizontalScrollPercent</td>
+                <td>IScrollProvider::SetScrollPercent</td>
+            </tr>
+            <tr>
+                <td>setVerticalScrollPercent</td>
+                <td>IScrollProvider::SetScrollPercent</td>
+            </tr>
+        </table>
+    </section>
+    <section id="usecases">
+        <a name="a-usecases"></a>
+        <h2 id="h2-usecases">Use Cases</h2>
+        <section id="usecase1">
+            <a name="a-usecase1"></a>
+            <h3 id="h3-usecase1">Use Case 1: Performance improvement with Just-in-Time loading of accessibility information</h3>
+            <ul>
+                <li>
+                    Pre-loading all information is costly
+                    <p>It can be very costly to pre-load all the accessibility information and get it added to all the relevant elements, especially if no one will ever ask for it. For example, populating all the names with aria-label takes time to load all the strings and add them to the markup, or to download them as part of a static markup.</p>
+                </li>
+                <li>
+                    Updating ARIA state is costly
+                    <p>Imagine a list with 100 items. If an item is added or removed from the list, every other item must update their aria-setsize and (potentially) aria-posinset attributes.</p>
+                </li>
+            </ul>
+            <p>The developer wants to provide accessibility information only when it is requested by AT via the Accessibility API, and not at the time the DOM is filled in.</p>
+            <p>This mechanism works with the @role attribute and any @aria- attribute.</p>
 
-    <h4 id="h4-usecase2-js">JavaScript Sample</h4>
+            <h4 id="h4-usecase2-js">JavaScript Sample</h4>
 
-    <div class="example">
-        <pre><code class="highlight prettyprint pretttyprinted">
+            <div class="example">
+                <pre><code class="highlight prettyprint pretttyprinted">
         &lt;div id="listbox1" role="listbox" onariarequest="HandleRequest(event);"&gt;
             &lt;div role="listitem"&gt;Item 1&lt;/div&gt;
             &lt;div role="listitem"&gt;Item 2&lt;/div&gt;
@@ -223,30 +256,33 @@
                 }
             }
       &lt;/script&gt;
-      <div id=content oncommand="manageList(event);">
+                <div id=content oncommand="manageList(event);">
         </code></pre>
-    </div>
-    <div class="issue">
-        <p>TODO: Add another example with a different attributename</p>
-    </div>
-    <h3 id="usecase2">Use Case 2: Accessibility information Stored outside DOM</h3>
-        <p>An application uses javascript objects to store all of its state (accessibility and other state), and only uses the DOM as a drawing surface.  The goal is to treat accessibility state the same way as other state, and to manage it directly from script.</p>
+            </div>
+            <div class="issue">
+                <p>TODO: Add another example with a different attributename</p>
+            </div>
+        </section>
+        <section id="usecase2">
+            <a name="a-usecase2"></a>
+            <h3 id="h3-usecase2">Use Case 2: Accessibility information Stored outside DOM</h3>
+            <p>An application uses javascript objects to store all of its state (accessibility and other state), and only uses the DOM as a drawing surface.  The goal is to treat accessibility state the same way as other state, and to manage it directly from script.</p>
 
-        <p>element.<b>onariarequest</b> is a new event that gets fired when an AT requests makes an Accessibility API request that maps to aria information</p>
-        <p>element.<b>oncommand</b> is a User Intention Event</p>
-        <div class="issue">TODO: update to match API naming changes in User Intention Events</div>
-        <p>event.<b>attributeName</b> is the attribute that changed as part of the event.  This is a new attribute we are proposing to add to the DOM Event Object</p>
-        <p>event.<b>preventDefault</b>(); stops the default processing of the event.  </p>
-        <p>element.<b>NotifyAriaStateChange</b>(string) toggles a boolean aria state.  It is equivalent to element.setAttribute("aria-"+string, true) or element.setAttribute("aria-"+string, false)</p>
-        <div class="issue">
-            <p>TODO:  what about non-bolean aria attributes?</p>
-            <p>NOTE: I'm not positive this is necessary.  Thoughts?</p>
-        </div>
+            <p>element.<b>onariarequest</b> is a new event that gets fired when an AT requests makes an Accessibility API request that maps to aria information</p>
+            <p>element.<b>oncommand</b> is a User Intention Event</p>
+            <div class="issue">TODO: update to match API naming changes in User Intention Events</div>
+            <p>event.<b>attributeName</b> is the attribute that changed as part of the event.  This is a new attribute we are proposing to add to the DOM Event Object</p>
+            <p>event.<b>preventDefault</b>(); stops the default processing of the event.  </p>
+            <p>element.<b>NotifyAriaStateChange</b>(string) toggles a boolean aria state.  It is equivalent to element.setAttribute("aria-"+string, true) or element.setAttribute("aria-"+string, false)</p>
+            <div class="issue">
+                <p>TODO:  what about non-bolean aria attributes?</p>
+                <p>NOTE: I'm not positive this is necessary.  Thoughts?</p>
+            </div>
 
 
-        <h4 id="h4-usecase2-js">JavaScript Sample</h4>
-        <div class="example">
-            <pre><code class="highlight prettyprint pretttyprinted">
+            <h4 id="h4-usecase2-js">JavaScript Sample</h4>
+            <div class="example">
+                <pre><code class="highlight prettyprint pretttyprinted">
         &lt;script&gt;
             var toggleState = false;
             function HandleRequest(event) {
@@ -271,25 +307,27 @@
         &lt;/script&gt;
         &lt;div id="myDiv" role="checkbox" oncommand="HandleCommand(event)" onariarequest="HandleRequest(event);" onclick="ToggleMe();"&gt;
         </code></pre>
-        </div>
-        <div class="issue">Double check calling syntax</div>
-
-        <h3 id="h3-usecase3">Use Case 3: Virtualized Content</h3>
-        <p>A user opens a large document in the Word web app.  Word adds the first page or two to the DOM, but not the whole document.  When the user reaches the end of the loaded portion of the document, more content is loaded.</p>
-        <p>How will a screen-reader user know:</p>
-        <ul>
-            <li>Position in the document</li>
-            <li>Position within a list or table that spans document chunks</li>
-            <li>When there is more content to load and when there is not</li>
-            <li>When content has been loaded</li>
-            <li>When there has been a network or other error preventing content loading</li>
-        </ul>
-        <p>How will an AT product signal to the app that it needs to load more content?</p>
-        <p>How will an app let AT products know that more content is loading and that focus should not move out of the content container?</p>
-        <p>Not all content is in the DOM, or the DOM contains little actual meaning for the content (the DOM is just a view). Requiring that the information be available on the DOM objects is hard to impossible depending on the app. This is used by apps like Office Online, where the content is stored in the backend and only a specific view (such as the current page of a document) is actually available in the DOM.</p>
-        <h4 id="h4-usecase4-js">JavaScript Sample</h4>
-        <div class="example">
-            <pre><code class="highlight prettyprint pretttyprinted">
+            </div>
+            <div class="issue">Double check calling syntax</div>
+        </section>
+        <section id="usecase3">
+            <a name="a-usecase3"></a>
+            <h3 id="h3-usecase3">Use Case 3: Virtualized Content</h3>
+            <p>A user opens a large document in the Word web app.  Word adds the first page or two to the DOM, but not the whole document.  When the user reaches the end of the loaded portion of the document, more content is loaded.</p>
+            <p>How will a screen-reader user know:</p>
+            <ul>
+                <li>Position in the document</li>
+                <li>Position within a list or table that spans document chunks</li>
+                <li>When there is more content to load and when there is not</li>
+                <li>When content has been loaded</li>
+                <li>When there has been a network or other error preventing content loading</li>
+            </ul>
+            <p>How will an AT product signal to the app that it needs to load more content?</p>
+            <p>How will an app let AT products know that more content is loading and that focus should not move out of the content container?</p>
+            <p>Not all content is in the DOM, or the DOM contains little actual meaning for the content (the DOM is just a view). Requiring that the information be available on the DOM objects is hard to impossible depending on the app. This is used by apps like Office Online, where the content is stored in the backend and only a specific view (such as the current page of a document) is actually available in the DOM.</p>
+            <h4 id="h4-usecase4-js">JavaScript Sample</h4>
+            <div class="example">
+                <pre><code class="highlight prettyprint pretttyprinted">
             &lt;script&gt;
             function HandleCommand(event) {
                 var myContainer = document.getElementById(" content");
@@ -335,35 +373,44 @@
         &lt;/body&gt;
         
             </code></pre>
-        </div>
+            </div>
 
-        <p><b>aria-async</b> is new aria-attribute which means that the content is may be virtualized.</p>
-        <div class="issue">TODO: Think about naming, and relationship with aria-busy and other live region features</div>
-        <p>Four new command events:</p>
-        <ul>
-            <li>ContentRequested is fired when the application makes a server call to get additional content.  This will often be in response to the user reaching the end of the currently loaded content, but could be in response to custom UI.</li>
-            <li>ContentLoaded is fired when the content has been returned from the server and added to the DOM.</li>
-            <li>ContentTimeOut is fired after n time if no content is returned.</li>
-            <li>ContentEnd is fired when the async call returns with no more content</li>
-        </ul>
-        <div class="issue">
-            <p>How does the server indicate this?  Is that something we need to define, or up to the app?</p>
-            <p>TODO:  Add where the requestcontent comes from</p>
-        </div>
+            <p><b>aria-async</b> is new aria-attribute which means that the content is may be virtualized.</p>
+            <div class="issue">TODO: Think about naming, and relationship with aria-busy and other live region features</div>
+            <p>Four new User Intentation Events:</p>
+            <ul>
+                <li><b>ContentRequested</b> is fired when the application makes a server call to get additional content.  This will often be in response to the user reaching the end of the currently loaded content, but could be in response to custom UI.</li>
+                <li><b>ContentLoaded</b> is fired when the content has been returned from the server and added to the DOM.</li>
+                <li><b>ContentTimeOut</b> is fired after n time if no content is returned.</li>
+                <li><b>ContentEnd</b> is fired when the async call returns with no more content</li>
+            </ul>
+            <div class="issue">
+                <p>How does the server indicate this?  Is that something we need to define, or up to the app?</p>
+                <p>TODO:  Add where the requestcontent comes from</p>
+            </div>
+        </section>
+        <section id="usecase4">
+            <a name="a-usecase4"></a>
+            <h3 id="h3-usecase4">Use Case 4: Custom Elements	 (Future)</h3>
+            <p>A developer encapsulates functionality in a control that can be called using a custom element tag.  Using DARIA, the developer can define default ARIA roles, states and properties, so that those will be mapped to UIA (and other accessibility APIs) in the same way that the default roles, states and properties of native HTML elements are mapped.</p>
+            <p><a href="http://w3c.github.io/webcomponents/spec/custom/">Custom Elements</a></p>
+            <p>WAPA allows more direct communication with accessibility APIS via script, including the ability to intercept accessibility API actions.  We believe that this can be used to hook up custom elements to web accessibility APIs and allow AT products to interact with them.</p>
+        </section>
+        <section id="usecase5">
+            <a name="a-usecase5"></a>
+            <h3 id="h3-usecase5">Case 5: WebDriver testing of accessibility (Future)</h3>
+            <p>Because WAPA is an in-browser javascript API, rather than a platform accessibility API, we may be able to simulate the effect of an AT acting on content by sending the same command events that the browser would send based on AT action.  This would allow WebDriver to exercise accessibility functionality in web apps.</p>
+        </section>
+    </section>
+    <section id="relationships">
+        <a name="a-rel"></a>
+        <h2>Relationship to Other work</h2>
+        <h3>Relationship to User Intention Events</h3>
+        <p>WAPA is a set of User Intention Events.  It builds on that work to hook into the accessibility layer, and has a dependency on that work.</p>
+        <p>A User Intention event will be fired whenever an action is taking place, such as toggling a checkbox, to allow authors to hook the action and perform any specific actions they need to, such as updating state and UI, with the option to prevent the default behavior (a simulated click, if applicable). For this, a new event will be added:</p>
 
-    <h3 id="usecase4">Use Case 4: Custom Elements	 (Future)</h3>
-    <p>A developer encapsulates functionality in a control that can be called using a custom element tag.  Using DARIA, the developer can define default ARIA roles, states and properties, so that those will be mapped to UIA (and other accessibility APIs) in the same way that the default roles, states and properties of native HTML elements are mapped.</p>
-    <p>http://w3c.github.io/webcomponents/spec/custom/</p>
-    <p>WAPA allows more direct communication with accessibility APIS via script, including the ability to intercept accessibility API actions.  We believe that this can be used to hook up custom elements to web accessibility APIs and allow AT products to interact with them.</p>
-    <h3 id="usecase4">Case 5: WebDriver testing of accessibility (Future)</h3>
-    <p>Because (WAPA) is an in-browser javascript API, rather than a platform accessibility API, we may be able to simulate the effect of an AT acting on content by sending the same command events that the browser would send based on AT action.  This would allow WebDriver to exercise accessibility functionality in web apps.</p>
-    <h2>Relationship to Other work</h2>
-    <h3>Relationship to User Intention Events</h3>
-    <p>WAPA is a set of User Intention Events.  It builds on that work to hook into the accessibility layer, and has a dependency on that work.</p>
-    <p>A User Intention event will be fired whenever an action is taking place, such as toggling a checkbox, to allow authors to hook the action and perform any specific actions they need to, such as updating state and UI, with the option to prevent the default behavior (a simulated click, if applicable). For this, a new event will be added:</p>
-        
-    <div class="idl">
-        <pre><code class="highlight prettyprint pretttyprinted">
+        <div class="idl">
+            <pre><code class="highlight prettyprint pretttyprinted">
         [Constructor(DOMString type, optional CommandEventInit eventInitDict)]
         interface CommandEvent : Event {
             readonly attribute DOMString commandName;
@@ -374,15 +421,15 @@
             DOMString detail = null;
         };
         </code></pre>
-    </div>
-    <p>The 'detail' payload part of this event is an extra piece of information defining the event, if necessary, such as the value for a SetValue command.</p>
-    <p>A User Intention event will fire whenever an AT invokes an action via the accessibility APIs:</p>
-    <img src="commandevent.gif" alt="Swimlane diagram of command events.  First the Accessibiltiy Tool sends a command to the browser to toggle the checkbox.  Next, the browser fires the onCommand event.  Next, javascript catches that event, runs application script, and returns to the browser. The browser then runs the default behavior if it has not been cancelled. Finally, the browser returns to the accessibility tool." />
-    <h3>Relationship to ARIA</h3>
-    <p>WAPA is intended to extend the functionality of ARIA to situations where it will be easier or more performant to manage accessibility in script rather than in markup.  It allows web authors to provide ARIA name-value pairs to the Accessibility API via javascript functions without the need for an element with those name-value pairs to be present in the document object.</p>
-    <h3>Relationship to IndieUI</h3>
-    <div class="issue">TODO</div>
-
+        </div>
+        <p>The 'detail' payload part of this event is an extra piece of information defining the event, if necessary, such as the value for a SetValue command.</p>
+        <p>A User Intention event will fire whenever an AT invokes an action via the accessibility APIs:</p>
+        <img src="commandevent.gif" alt="Swimlane diagram of command events.  First the Accessibiltiy Tool sends a command to the browser to toggle the checkbox.  Next, the browser fires the onCommand event.  Next, javascript catches that event, runs application script, and returns to the browser. The browser then runs the default behavior if it has not been cancelled. Finally, the browser returns to the accessibility tool." />
+        <h3>Relationship to ARIA</h3>
+        <p>WAPA is intended to extend the functionality of ARIA to situations where it will be easier or more performant to manage accessibility in script rather than in markup.  It allows web authors to provide ARIA name-value pairs to the Accessibility API via javascript functions without the need for an element with those name-value pairs to be present in the document object.</p>
+        <h3>Relationship to IndieUI</h3>
+        <p><a href="https://dvcs.w3.org/hg/IndieUI/raw-file/default/src/indie-ui-events.html#eventslist">IndieUI Events List</a> has some overlap with this functionality.  Our goal is to harmonize with IndieUI and User Intention Events</p>
+    </section>
 </body>
 
 
