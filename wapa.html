@@ -78,8 +78,8 @@
         <a name="a-props"></a>
         <h2 id="h2-props">2 Web Accessibility Properties</h2>
         <p>AT Request for Accessible node property via accessibility API</p>
-        <div class="issue">todo: make graphical flowchart</div>
-        <ol>
+        <img src="ariarequestevent.svg" alt="Swimlane flowchart of ariarequest object" aria-describedby="flowtext1"/>
+        <ol id="flowtext1">
             <li>AT calls Accessibility API via OS requesting the value of a property on the Accessible node</li>
             <li>Accessibility API queries browser</li>
             <li>Browser gets the DOM element assosicated with the Accessible node</li>
@@ -121,7 +121,8 @@
         <a name="a-actions"></a>
         <h2 id="h2-actions">3 Web Accessibility Actions</h2>
         <p>AT Action taken by user</p>
-        <ol>
+        <img src="commandevent.svg" alt="Swimlane flowchart of command event initiated by AT" aria-describedby="flowtext2" />"
+        <ol id="flowtext2">
             <li>User takes action on an element using an AT</li>
             <li>AT calls accessibility API method on that element</li>
             <li>Accessibility API runs that method against browser</li>
