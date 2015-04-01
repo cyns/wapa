@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+
+    <div id="listbox1" onariarequest="HandleRequest(event);">
+        <div>Item 1</div>
+        <div>Item 2</div>
+        <div>Item 3</div>
+        ...
+        <div>Item 100</div>
+    </div>
+
+
+
+    <script>
+        var firsttime = true;
+        function HandleRequest(event) {
+            if (firsttime) {
+                firsttime = false;
+                initARIA();
+            }
+           
+        }
+
+        function initARIA() {
+            var myList = document.getElementById("listbox1");
+            var myItems = myList.children;
+            myList.setAttribute("role", "listbox");
+            for (var i = 0; i < myItems.length; i++) {
+                myItems[i].setAttribute("role", "listitem");
+                myItems[i].setAttribute("aria-posinset", i+1)
+                myItems[i].setAttribute("aria-setsize", "100")
+            }
+        }
+
+
+    </script>
+</body>
+</html>

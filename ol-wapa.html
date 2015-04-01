@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+<h1>Posinset and Setsize added to &lt;li&gt;</h1>
+
+<h2>Unordered List with no aria</h2>
+    <ul>
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+        ...
+        <li>Item 100</li>
+
+    </ul>
+
+<h2>This one has a handler for onariarequest</h2>
+<p>When there is a request from platform accessibiltiy API, this event gets fired, and the ARIA is connected at that time.  This script only runs if there is a request for ARIA values.</p>
+
+    <ul id="listbox2" onariarequest="HandleRequest(event);">
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+        ...
+        <li>Item 100</li>
+
+    </ul>
+
+    <script type="text/javascript">
+        var firsttime = true;
+        function HandleRequest(event) {
+            var myList = document.getElementById('listbox2');
+            var myItems = myList.children;
+            if (firsttime) {
+                for (var i = 0; i < myItems.length; i++) {
+                    myItems[i].setAttribute("aria-posinset", i + 1);
+                    myItems[i].setAttribute("aria-setsize", "100");
+                }
+                myItems[3].setAttribute("aria-posinset", "100"); //make the last one 100. 
+                firsttime = false;
+            }
+        }
+
+    </script>
+</body>
+</html>
