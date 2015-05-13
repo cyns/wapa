@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Checkbox Demo</title>
+
+</head>
+<body>
+    <div tabindex="0" id="myDiv" role="checkbox" onclick="ToggleMe();" oncommand="HandleCommand(event);" style="font:bold 96pt verdana;">
+        <img src="img/unchecked.jpg" alt="" />Awesome!
+    </div>
+
+    <script type="text/javascript">
+    var toggleState = false;
+
+    function HandleRequest(event) {
+        var myCheckbox = document.getElementById("myDiv");
+        if (event.attributeName === "checked" && event.target === myCheckbox) {
+            event.attributeValue = (toggleState ? "true" : "false");
+        }
+    }
+
+    function HandleCommand(event) {
+        var myCheckbox = document.getElementById("myDiv");
+        if (event.target === myCheckbox && event.commandName === "toggle") {
+            ToggleMe();
+            event.preventDefault();
+        }
+    }
+
+    function ToggleMe() {
+            var myCheckbox = document.getElementById("myDiv");
+            if(toggleState){            
+                myCheckbox.children[0].setAttribute("src", "img/unchecked.jpg");
+                myCheckbox.setAttribute("aria-checked", "false");
+            }else{
+                myCheckbox.children[0].setAttribute("src", "img/checked.jpg");
+                myCheckbox.setAttribute("aria-checked", "true");
+            }
+            toggleState = !toggleState;            
+        }
+
+    </script>
+</body>
+</html>
