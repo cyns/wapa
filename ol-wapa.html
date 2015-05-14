@@ -9,19 +9,6 @@
     </style>
 </head>
 <body>
-<h1>Posinset and Setsize added to &lt;li&gt;</h1>
-<h2>How to Demo Me</h2>
-<p>I only work in Edge on Windows 10 right now.  I'd love it if other browsers supported me too.</p>
-<ul>
-    <li>In Edge, go to about:flags and check “experimental accessibility features”</li>
-    <li>Restart Edge</li>
-    <li>Start F12 tools</li>
-    <li>Observe that neither list has any aria markup</li>
-    <li>Start Narrator (Windows+Enter)</li>
-    <li>CAPSLOCK+Right Arrow to get into and explore the page</li>
-    <li>Observe that the second list now reads as “one of 100, two of 100, three of 100, 100 o 100” while the first list is still “1 of 4…4 of 4”.</li>
-    <li>Switch to F12 window and observe that the second list now has aria markup.  The ARIA markup was added in response to the call from Narrator via UIA via the onariarequest javascript event handler.</li>
-</ul>
 
 <h2>Unordered List with no aria</h2>
     <ul>
@@ -34,7 +21,6 @@
     </ul>
 
 <h2>This one has a handler for onariarequest</h2>
-<p>When there is a request from platform accessibiltiy API, this event gets fired, and the ARIA is connected at that time.  This script only runs if there is a request for ARIA values.</p>
 
     <ul id="listbox2" onariarequest="HandleRequest(event);">
         <li>Item 1</li>
@@ -61,5 +47,32 @@
         }
 
     </script>
+    
+<h1>WAPA Demo: Dynamic Set Size and Position</h1>
+<h2>How to Demo Me</h2>
+<p>I only work in Edge on Windows 10 right now.  I'd love it if other browsers supported me too.</p>
+<ul>
+    <li>In Edge, go to about:flags and check “experimental accessibility features”</li>
+    <li>Restart Edge</li>
+    <li>Start F12 tools</li>
+    <li>Observe that neither list has any aria markup</li>
+    <li>Start Narrator (Windows+Enter)</li>
+    <li>CAPSLOCK+Right Arrow to get into and explore the page</li>
+    <li>Observe that the second list now reads as “one of 100, two of 100, three of 100, 100 o 100” while the first list is still “1 of 4…4 of 4”.</li>
+    <li>Switch to F12 window and observe that the second list now has aria markup.  The ARIA markup was added in response to the call from Narrator via UIA via the onariarequest javascript event handler.</li>
+</ul>
+
+<h2>Why is that interesting?</h2>
+<p>When you explored the page with Narrator, Narrator made a request to Edge for UIA properties.  Edge coninected those properties
+    at that time, and sent them to Narrator.  IE did that part before.  What is new is that when the UIA request came in, Edge sends the <code>onariarequest</code> 
+DOM event.  This demo has an event handler that hooks up the ARIA list size and position attributes. The markup for these was 
+not downloaded, and was only added to the page when it was needed.  That saves download time, and processing time in cases
+where there isn't an Assistive Technology product running.</p>
+
+<p>This script also changed the size of the list, and the position of each element, to accomdate a list that didn't 
+    include all of its children in the current page (or the current DOM).  This feature will make creating virtualized
+    lists much easier.
+</p>
+
 </body>
 </html>
