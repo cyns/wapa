@@ -42,5 +42,29 @@
         }
 
     </script>
+    
+<h1>Checkbox Toggle Demo</h1>
+<h2>How to Demo Me</h2>
+<p>I only work in Edge on Windows 10 right now.  I'd love it if other browsers supported me too.</p>
+<ol>
+    <li>In Edge, go to about:flags and check “experimental accessibility features”</li>
+    <li>Restart Edge</li>
+    <li>Start Narrator (Windows+Enter).</li>
+    <li>Focus should be on the large checkbox, but if it isn't, use CAPSLOCK+Right Arrow to get into and explore the page until it is.</li>
+    <li>CAPSLOCK + Space.</li>
+    <li>The checkbox will check.  Do it again, and it will uncheck.</li>
+</ul>
+
+<h2>Why is that interesting?</h2>
+<p>The script that checks the checkbox is responding to a new javascript event <code>oncommand</code>.  
+The command event is sent by the Edge engine when UIA (the Accessibility API on Windows) sends an action, 
+in this case, Toggle action from the Toggle pattern. The Toggle pattern is implemented for checkboxes, whether they 
+are marked up with HTML or ARIA. When you used CAPSLOCK + Space in Narrator, Narrator called <code>Toggle.Toggle()</code> on UIA represenation of the checkbox,
+    and Edge sent that along to the DOM represenation of the checkbox, where it turned up as this new oncommand event.</p>
+<p>The command event exposes <code>event.commandName</code>, in this case equal to "toggle," and the event handler
+can do different things based on which command it got from UIA and Narrator.  
+In this case, it calls the same <code>ToggleMe()</code> function that the onclick handler calls, which swaps the 
+image and fixes up the ARIA properties. Narrator users get exactly the same behavior as mouse users.</p>
+
 </body>
 </html>
