@@ -7,6 +7,19 @@
 </head>
 <body>
 <h1>Posinset and Setsize added to &lt;li&gt;</h1>
+<h2>How to Demo me</h2>
+<p>I only work in Edge on Windows 10 right now.  I'd love it if other browsers supported me too.</p>
+<ul>
+    <li>In Edge, go to about:flags and check “experimental accessibility features”</li>
+    <li>Restart Edge</li>
+    <li>Open https://rawgit.com/cyns/wapa/master/ol-wapa.html in Edge</li>
+    <li>Start F12 tools</li>
+    <li>Observe that neither list has any aria markup</li>
+    <li>Start Narrator (Windows+Enter)</li>
+    <li>CAPSLOCK+Right Arrow to get into and explore the page</li>
+    <li>Observe that the second list now reads as “one of 100, two of 100, three of 100, 100 o 100” while the first list is still “1 of 4…4 of 4”.</li>
+    <li>Switch to F12 window and observe that the second list now has aria markup.  The ARIA markup was added in response to the call from Narrator via UIA via the onariarequest javascript event handler.</li>
+</ul>
 
 <h2>Unordered List with no aria</h2>
     <ul>
