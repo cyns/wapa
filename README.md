@@ -1,8 +1,15 @@
-# What is WAPA?
+# Script-Based Web Accessibility
+### Abstract
+This is a proposal for a set of User Intention Events that build on ARIA to extend accessibility functionality to complex, scripted web applications. It supports use cases where markup-based solutions have proven impossible, difficult or costly to implement.
 
-WAPA stands for Web Accessibility Properties and Actions.  WAPA is a technology that allows scripted web applications more access to the accessibility layer.
-##Why do we need it?
-* ARIA is a one-way API.  It only allows web developers to set properties in the accessibility API via markup.  It does not allow the platform accessibility API (UIA on Windows) to send actions to UI created by the web developer. WAPA allows the accessibility API to trigger an action.
-* Platform Accessibility API properties, such as the checked state of a checkbox, can come from native HTML, ARIA or be maintained in javascript objects.  Tracking their state is very confusing.  WAPA unifies the state into a single place.
-* Some javascript apps don’t use DOM attributes to store state at all, and traditional ARIA does not work for them
-* WAPA allows the ARIA attributes to be added in response to an Accessibiltiy API call, rather than for all users.  This reduces download cost.  For applications that change the DOM a lot, it can also improve performance by reducing the number and size of changes.
+
+# Introduction
+
+This proposal is being made to start discussion in the Web Incubation Community Group to start discussion, with the expectation there will be changes as it is combined with similar proposals.
+
+## Background and Rationale
+
+This proposal is based on [WAPA](https://github.com/cyns/wapa/blob/master/wapa.html) and got further inspiration from [Indie UI Events](https://w3c.github.io/indie-ui/indie-ui-events.html) and [Mozilla Web Accessibility API](https://asurkov.github.io/a11yapi/)
+
+# Learn More
+Find out more about Script-Based Web Accessibiltiy in the [Explainer](https://github.com/cyns/wapa/blob/master/wapa.html)
