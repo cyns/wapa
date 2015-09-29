@@ -12,4 +12,4 @@ This proposal is being made to start discussion in the Web Incubation Community 
 This proposal is based on [WAPA](https://github.com/cyns/wapa/blob/master/wapa.html) and got further inspiration from [Indie UI Events](https://w3c.github.io/indie-ui/indie-ui-events.html) and [Mozilla Web Accessibility API](https://asurkov.github.io/a11yapi/)
 
 # Learn More
-Find out more about Script-Based Web Accessibiltiy in the [Explainer](https://github.com/cyns/wapa/blob/master/wapa.html)
+Find out more about Script-Based Web Accessibiltiy in the [Explainer](https://github.com/cyns/wapa/blob/master/ScriptAccessibility.md)
