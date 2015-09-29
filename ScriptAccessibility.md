@@ -1,4 +1,4 @@
-# Script Accessibility
+# Script-Based Web Accessibility
 
 ### Abstract
 This is a proposal for a set of User Intention Events that build on ARIA to extend accessibility functionality to complex, scripted web applications. It supports use cases where markup-based solutions have proven impossible, difficult or costly to implement.
