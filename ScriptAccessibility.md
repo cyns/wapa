@@ -9,6 +9,8 @@ This is a proposal for a set of User Intention Events that build on ARIA to exte
 
 This proposal is being made to start discussion in the Web Incubation Community Group to start discussion, with the expectation there will be changes as it is combined with similar proposals.
 
+There is an experimental implementation of this in Microsoft Edge. To enable it, launch Edge in Windows 10, go to about:flags, scroll to the bottom, and check "Enable experimental accessibility features."
+
 ## Background and Rationale
 
 This proposal is based on [WAPA](https://github.com/cyns/wapa) and got further inspiration from [Indie UI Events](https://w3c.github.io/indie-ui/indie-ui-events.html) and [Mozilla Web Accessibility API](https://asurkov.github.io/a11yapi/)
